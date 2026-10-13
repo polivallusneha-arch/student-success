@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SuccessAI | Student Success Platform</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--navy:#172554;--blue:#4f46e5;--teal:#0d9488;--bg:#f4f6fb;--card:#fff;--text:#202a41;--muted:#64748b;--line:#e4e8f0;--red:#dc4545;--green:#16845e;--orange:#d97706}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;font-size:14px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+aside{width:238px;background:var(--navy);color:white;padding:20px 13px;flex-shrink:0}
+.brand{font-size:23px;font-weight:800;padding:5px 10px 23px}
+.brand span{color:#5eead4}
+.brand small{display:block;color:#b8c5df;font-size:9px;letter-spacing:1px;margin-top:7px}
+.navtitle{font-size:10px;color:#91a2c3;letter-spacing:1.5px;padding:14px 10px 8px}
+.nav{width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:11px 10px;border-radius:7px;margin:2px 0;font-size:13px}
+.nav:hover,.nav.active{background:#2d3c63;color:white}
+.nav.active{border-left:3px solid #5eead4}
+main{flex:1;min-width:0}
+header{height:auto;min-height:75px;background:white;border-bottom:1px solid var(--line);padding:15px 25px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header h1{font-size:19px;margin:0}
+header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.avatar{width:35px;height:35px;border-radius:50%;background:#e0e7ff;color:#3730a3;display:grid;place-items:center;font-weight:bold}
+.content{padding:22px 25px;max-width:1650px;margin:auto}
+.page{display:none}.page.active{display:block}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h2{font-size:21px;margin:0}h3{font-size:14px;margin:0 0 7px}
+.sub{font-size:12px;color:var(--muted);margin-top:6px}
+.grid{display:grid;gap:14px}.four{grid-template-columns:repeat(4,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px;margin-bottom:15px;min-width:0}
+.metric-label{font-size:12px;color:var(--muted)}.metric{font-size:29px;font-weight:800;margin:12px 0 6px}.metric-foot{font-size:11px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:white;border-radius:7px;padding:9px 12px;font-size:12px;color:var(--text)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:white}.btn.good{background:#e0f7ed;color:#08764f;border-color:#b7ead4}.btn.danger{background:#fff0f0;color:#b42323}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{width:100%;border:1px solid #dbe1eb;background:white;border-radius:7px;padding:10px;color:var(--text);font-size:12px;min-width:0}
+.field:disabled{background:#f1f3f7;color:#7b8496}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:13px 0}
+.filters .field{width:auto;flex:1;min-width:130px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{text-align:left;background:#f8fafc;padding:12px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+td{padding:12px 10px;border-top:1px solid #edf0f5;font-size:12px;vertical-align:middle}
+tbody tr:hover{background:#fafbff}
+.small{font-size:10px;color:var(--muted);display:block;margin-top:4px}
+.pill{display:inline-block;border-radius:20px;padding:5px 8px;font-size:10px;font-weight:750}
+.high{background:#fee2e2;color:#b42323}.medium{background:#fff0d5;color:#945900}.low{background:#dcfce7;color:#166534}.info{background:#e0e7ff;color:#3730a3}
+.status{min-width:108px;border:1px solid var(--line);border-radius:6px;padding:7px;background:white;font-size:11px}
+.bar{height:6px;background:#edf0f5;border-radius:20px;overflow:hidden;margin-top:5px}.bar span{height:100%;display:block;background:var(--teal)}
+.notice{padding:12px 14px;background:#eef2ff;color:#3730a3;border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:15px}
+.notice.good{background:#e1f7ed;color:#08764f}.notice.warn{background:#fff3df;color:#8a5100}
+.chart{height:245px;position:relative}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.score{font-size:18px;font-weight:800}
+.empty{text-align:center;padding:24px;color:var(--muted)}
+textarea.field{min-height:75px;resize:vertical}
+hr{border:0;border-top:1px solid var(--line);margin:17px 0}
+.footer{text-align:center;color:var(--muted);font-size:10px;padding:22px}
+.profilebox{background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:13px;margin-bottom:12px}
+.checkrow{display:flex;gap:8px;align-items:center;font-size:12px}
+.checkrow input{width:auto}
+#toast{position:fixed;bottom:20px;right:20px;background:#172554;color:white;padding:13px 18px;border-radius:9px;display:none;z-index:99;box-shadow:0 5px 20px #0002;max-width:320px}
+@media(max-width:1050px){.four{grid-template-columns:repeat(2,1fr)}.three{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.layout{display:block}aside{width:100%;padding:12px}.brand{padding:5px 8px 13px}.navtitle{display:none}aside nav{display:flex;overflow-x:auto;gap:4px}.nav{white-space:nowrap;width:auto}.content{padding:14px 10px}header{padding:13px}.four,.two,.three{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr 1fr}.metric{font-size:24px}.card{padding:12px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+  <div class="brand">✦ Success<span>AI</span><small>STUDENT INTELLIGENCE PLATFORM</small></div>
+  <div class="navtitle">WORKSPACE</div>
+  <nav>
+    <button class="nav active" data-page="dashboard">▦ Dashboard</button>
+    <button class="nav" data-page="attendance">✓ Live Attendance</button>
+    <button class="nav" data-page="students">♙ Students & Profiles</button>
+    <button class="nav" data-page="marks">▤ Internal Marks</button>
+    <button class="nav" data-page="risks">⚑ AI Risk Insights</button>
+    <button class="nav" data-page="interventions">◎ Interventions</button>
+    <button class="nav" data-page="placements">↗ Placement Readiness</button>
+    <button class="nav" data-page="notifications">♧ Notifications</button>
+    <button class="nav" data-page="reports">▥ Reports & Audit</button>
+  </nav>
+  <div class="navtitle">SYSTEM</div>
+  <button class="nav" data-page="settings">⚙ Settings & Data</button>
+  <div style="padding:15px 10px;color:#a9b9d4;font-size:10px;line-height:1.7">Prototype v2.0<br>Sample student records</div>
+</aside>
+
+<main>
+<header>
+  <div><h1 id="topTitle">Student Success Overview</h1><p id="topSubtitle">Academic year 2026–27 · Student intelligence and decision support</p></div>
+  <div class="header-right">
+    <select id="role" class="field" style="width:auto">
+      <option value="faculty">Faculty</option>
+      <option value="admin">Administrator</option>
+      <option value="placement">Placement Officer</option>
+    </select>
+    <div class="avatar" id="avatar">FC</div>
+  </div>
+</header>
+<div class="content">
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+<div class="heading"><div><h2>Student Success Overview</h2><div class="sub">A unified view of academic performance, attendance, and employability.</div></div><button class="btn primary" onclick="go('risks')">Review risk insights →</button></div>
+<div class="notice" id="welcomeNotice">Faculty view: student indicators and attendance for your assigned classes.</div>
+<div class="grid four">
+  <div class="card"><div class="metric-label">Total Students</div><div class="metric" id="kStudents">0</div><div class="metric-foot">In current sample dataset</div></div>
+  <div class="card"><div class="metric-label">Average Success Score</div><div class="metric" id="kScore">0</div><div class="metric-foot">Weighted score out of 100</div></div>
+  <div class="card"><div class="metric-label">High-Risk Students</div><div class="metric" id="kRisk">0</div><div class="metric-foot">Require review</div></div>
+  <div class="card"><div class="metric-label">Average Attendance</div><div class="metric" id="kAttendance">0%</div><div class="metric-foot">Estimated from attendance records</div></div>
+</div>
+<div class="grid two">
+  <div class="card"><h3>Success Score Distribution</h3><div class="sub">Student performance across score bands</div><div class="chart"><canvas id="scoreChart"></canvas></div></div>
+  <div class="card"><h3>Attendance Overview</h3><div class="sub">Attendance percentage by student</div><div class="chart"><canvas id="attChart"></canvas></div></div>
+</div>
+<div class="card"><h3>Priority Insights</h3><div class="sub">Rule-based suggestions generated from the sample data.</div><div id="priorityInsights"></div></div>
+<div class="card"><h3>Recently Updated Attendance</h3><div class="tablewrap"><table><thead><tr><th>Student</th><th>Date</th><th>Subject</th><th>Status</th></tr></thead><tbody id="recentAttendance"></tbody></table></div></div>
+</section>
+
+<!-- ATTENDANCE -->
+<section class="page" id="attendance">
+<div class="heading"><div><h2>Live Attendance Register</h2><div class="sub">Select a class, mark each student, and save attendance.</div></div></div>
+<div class="notice" id="attendanceNotice">Faculty can edit attendance for assigned classes in this prototype. Select a date and subject to begin.</div>
+<div class="card">
+<div class="formgrid">
+ <div><label>Department</label><select id="aDept" class="field"><option value="All">All departments</option><option>Computer Science</option><option>Information Technology</option><option>Electronics</option><option>Mechanical</option></select></div>
+ <div><label>Section</label><select id="aSection" class="field"><option value="All">All sections</option><option>A</option><option>B</option></select></div>
+ <div><label>Subject</label><select id="aSubject" class="field"><option>Data Structures</option><option>Database Management</option><option>Mathematics</option><option>Communication Skills</option><option>Programming</option></select></div>
+ <div><label>Attendance Date</label><input id="aDate" type="date" class="field"></div>
+ <div><label>Search Student</label><input id="aSearch" class="field" placeholder="Name or student ID"></div>
+ <div><label>Session</label><select id="aSession" class="field"><option>Morning</option><option>Afternoon</option><option>Evening</option></select></div>
+</div>
+<div class="grid four">
+ <div class="profilebox">Total <div class="metric" id="aTotal">0</div></div>
+ <div class="profilebox">Present <div class="metric" style="color:var(--green)" id="aPresent">0</div></div>
+ <div class="profilebox">Absent <div class="metric" style="color:var(--red)" id="aAbsent">0</div></div>
+ <div class="profilebox">Late / Leave <div class="metric" id="aOther">0</div></div>
+</div>
+<div class="filters">
+ <button class="btn good" onclick="markAll('Present')">✓ Mark All Present</button>
+ <button class="btn danger" onclick="markAll('Absent')">Mark All Absent</button>
+ <button class="btn" onclick="clearMarks()">Clear Unsaved Marks</button>
+ <button class="btn primary" onclick="saveAttendance()">Save Attendance</button>
+</div>
+<div class="tablewrap"><table><thead><tr><th>Student</th><th>Department</th><th>Attendance</th><th>Today's Status</th></tr></thead><tbody id="attendanceRows"></tbody></table></div>
+<div class="sub" id="aPending" style="margin-top:12px"></div>
+</div>
+</section>
+
+<!-- STUDENTS -->
+<section class="page" id="students">
+<div class="heading"><div><h2>Students & Profiles</h2><div class="sub">Unified student information across academics, engagement, and placement.</div></div><button class="btn primary" onclick="openStudentForm()">+ Add Student</button></div>
+<div class="card">
+<div class="filters"><input id="studentSearch" class="field" placeholder="Search name, ID or department"><select id="studentDept" class="field"><option value="All">All departments</option><option>Computer Science</option><option>Information Technology</option><option>Electronics</option><option>Mechanical</option></select></div>
+<div class="tablewrap"><table><thead><tr><th>Student</th><th>Department</th><th>Attendance</th><th>Academic</th><th>Success Score</th><th>Risk</th><th>Action</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+</div>
+<div class="card" id="studentFormCard" style="display:none">
+<h3 id="studentFormTitle">Add Student</h3>
+<div class="formgrid">
+<div><label>Student ID</label><input id="fId" class="field" placeholder="STU013"></div>
+<div><label>Full Name</label><input id="fName" class="field"></div>
+<div><label>Department</label><select id="fDept" class="field"><option>Computer Science</option><option>Information Technology</option><option>Electronics</option><option>Mechanical</option></select></div>
+<div><label>Section</label><select id="fSection" class="field"><option>A</option><option>B</option></select></div>
+<div><label>Academic Average (0–100)</label><input id="fAcademic" type="number" min="0" max="100" class="field" value="60"></div>
+<div><label>LMS Activity (0–100)</label><input id="fLms" type="number" min="0" max="100" class="field" value="60"></div>
+<div><label>Engagement (0–100)</label><input id="fEngagement" type="number" min="0" max="100" class="field" value="60"></div>
+<div><label>Placement Readiness (0–100)</label><input id="fPlacement" type="number" min="0" max="100" class="field" value="60"></div>
+<div><label>Skills (0–100)</label><input id="fSkills" type="number" min="0" max="100" class="field" value="60"></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="saveStudent()">Save Student</button><button class="btn" onclick="$('studentFormCard').style.display='none'">Cancel</button></div>
+</div>
+<div id="profileCard" class="card" style="display:none"></div>
+</section>
+
+<!-- MARKS -->
+<section class="page" id="marks">
+<div class="heading"><div><h2>Internal Marks Management</h2><div class="sub">Faculty can update marks for students in their assigned classes.</div></div></div>
+<div class="card">
+<div class="filters"><select id="mSubject" class="field"><option>Mathematics</option><option>Data Structures</option><option>Database Management</option><option>Programming</option><option>Communication Skills</option></select><input id="mSearch" class="field" placeholder="Search student"></div>
+<div class="notice">Enter marks obtained and maximum marks for each assessment. Saving updates the academic indicator used in the success score.</div>
+<div class="tablewrap"><table><thead><tr><th>Student</th><th>Assessment</th><th>Marks Obtained</th><th>Maximum Marks</th><th>Percentage</th><th>Action</th></tr></thead><tbody id="marksRows"></tbody></table></div>
+</div>
+</section>
+
+<!-- RISKS -->
+<section class="page" id="risks">
+<div class="heading"><div><h2>AI Risk Insights</h2><div class="sub">Explainable, rule-based risk indicators. These are alerts, not definitive predictions.</div></div><button class="btn" onclick="exportRisk()">Export Risk Report</button></div>
+<div class="notice warn">Risk rules use illustrative thresholds. Validate them against actual college data before making consequential decisions. Faculty should review each flag with the student's context.</div>
+<div class="grid three">
+<div class="card"><div class="metric-label">High Risk</div><div class="metric" id="rHigh">0</div><div class="metric-foot">Priority review recommended</div></div>
+<div class="card"><div class="metric-label">Medium Risk</div><div class="metric" id="rMedium">0</div><div class="metric-foot">Monitor and support</div></div>
+<div class="card"><div class="metric-label">Low Risk</div><div class="metric" id="rLow">0</div><div class="metric-foot">Continue monitoring</div></div>
+</div>
+<div class="card"><h3>Student Risk Register</h3><div class="tablewrap"><table><thead><tr><th>Student</th><th>Success Score</th><th>Attendance</th><th>Academic</th><th>Risk</th><th>Contributing Factors</th><th>Suggested Action</th></tr></thead><tbody id="riskRows"></tbody></table></div></div>
+</section>
+
+<!-- INTERVENTIONS -->
+<section class="page" id="interventions">
+<div class="heading"><div><h2>Faculty Intervention Tracker</h2><div class="sub">Create action plans, record counselling, and track follow-ups.</div></div><button class="btn primary" onclick="openInterventionForm()">+ New Intervention</button></div>
+<div class="card" id="interventionForm" style="display:none">
+<h3>Create Student Action Plan</h3>
+<div class="formgrid">
+<div><label>Student</label><select id="iStudent" class="field"></select></div>
+<div><label>Intervention Type</label><select id="iType" class="field"><option>Academic tutoring</option><option>Attendance counselling</option><option>Placement preparation</option><option>Wellbeing check-in</option><option>LMS engagement</option><option>Other</option></select></div>
+<div><label>Follow-up Date</label><input id="iDate" type="date" class="field"></div>
+<div style="grid-column:1/-1"><label>Action Plan / Notes</label><textarea id="iNotes" class="field" placeholder="Describe the agreed action and expected outcome"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="saveIntervention()">Save Action Plan</button><button class="btn" onclick="$('interventionForm').style.display='none'">Cancel</button></div>
+</div>
+<div class="card"><div class="filters"><select id="iFilter" class="field"><option value="All">All statuses</option><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+<div class="tablewrap"><table><thead><tr><th>Student</th><th>Intervention</th><th>Action Plan</th><th>Follow-up</th><th>Status</th><th>Update</th></tr></thead><tbody id="interventionRows"></tbody></table></div></div>
+</section>
+
+<!-- PLACEMENTS -->
+<section class="page" id="placements">
+<div class="heading"><div><h2>Placement Readiness</h2><div class="sub">Track skills, aptitude, mock interviews, and employability preparation.</div></div></div>
+<div class="notice">Placement officers can update placement indicators in this prototype. Scores are intended to guide preparation, not guarantee hiring outcomes.</div>
+<div class="card"><div class="filters"><input id="pSearch" class="field" placeholder="Search student"></div>
+<div class="tablewrap"><table><thead><tr><th>Student</th><th>Skills</th><th>Aptitude</th><th>Coding</th><th>Interview</th><th>Readiness</th><th>Update</th></tr></thead><tbody id="placementRows"></tbody></table></div></div>
+<div class="card" id="placementForm" style="display:none"><h3>Update Placement Skills</h3>
+<div class="formgrid">
+<div><label>Student</label><input id="pStudentName" class="field" disabled></div>
+<div><label>Aptitude (0–100)</label><input id="pAptitude" type="number" min="0" max="100" class="field"></div>
+<div><label>Coding (0–100)</label><input id="pCoding" type="number" min="0" max="100" class="field"></div>
+<div><label>Interview (0–100)</label><input id="pInterview" type="number" min="0" max="100" class="field"></div>
+<div><label>Skills (0–100)</label><input id="pSkill" type="number" min="0" max="100" class="field"></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="savePlacement()">Save Skills</button><button class="btn" onclick="$('placementForm').style.display='none'">Cancel</button></div>
+</div>
+</section>
+
+<!-- NOTIFICATIONS -->
+<section class="page" id="notifications">
+<div class="heading"><div><h2>Notifications & Alerts</h2><div class="sub">Alerts generated from saved attendance and student indicators.</div></div><button class="btn" onclick="markAllRead()">Mark All Read</button></div>
+<div class="notice">These are in-app prototype notifications. Email, SMS, and push notifications require a backend or messaging service.</div>
+<div id="notificationList"></div>
+</section>
+
+<!-- REPORTS -->
+<section class="page" id="reports">
+<div class="heading"><div><h2>Reports & Audit Log</h2><div class="sub">Export reports and review recorded changes.</div></div></div>
+<div class="grid three">
+<div class="card"><h3>Student Success Report</h3><div class="sub">Scores, attendance, academics, and risk flags.</div><button class="btn primary" onclick="exportStudents()">Download CSV</button></div>
+<div class="card"><h3>Attendance Report</h3><div class="sub">Saved attendance entries with session details.</div><button class="btn primary" onclick="exportAttendance()">Download CSV</button></div>
+<div class="card"><h3>Intervention Report</h3><div class="sub">Action plans and follow-up status.</div><button class="btn primary" onclick="exportInterventions()">Download CSV</button></div>
+</div>
+<div class="card"><h3>Audit Log</h3><div class="sub">Prototype change history stored in this browser.</div><div class="tablewrap"><table><thead><tr><th>Timestamp</th><th>Actor Role</th><th>Action</th><th>Details</th></tr></thead><tbody id="auditRows"></tbody></table></div></div>
+<div class="card"><h3>Data Backup</h3><div class="sub">Download the current browser-stored prototype data as JSON.</div><button class="btn primary" onclick="backupData()">Download JSON Backup</button></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+<div class="heading"><div><h2>Settings & Data Management</h2><div class="sub">Manage demo data, thresholds, and local backups.</div></div></div>
+<div class="card"><h3>Risk Thresholds</h3><div class="sub">Change the attendance threshold used for warnings.</div>
+<div class="formgrid"><div><label>Attendance warning (%)</label><input type="number" min="1" max="100" id="threshold" class="field" value="75"></div><div><label>Academic warning (%)</label><input type="number" min="1" max="100" id="academicThreshold" class="field" value="50"></div></div>
+<button class="btn primary" onclick="saveSettings()">Save Thresholds</button>
+</div>
+<div class="card"><h3>Import Student List (CSV)</h3><div class="sub">Expected columns: id,name,dept,section,academic,lms,engagement,placement,skills</div><input type="file" id="csvFile" class="field" accept=".csv" style="margin:12px 0"><button class="btn primary" onclick="importCSV()">Import CSV</button></div>
+<div class="card"><h3>Reset Sample Data</h3><div class="notice warn">This clears browser-stored changes and restores the original demonstration data.</div><button class="btn danger" onclick="resetData()">Reset All Prototype Data</button></div>
+<div class="card"><h3>Security & Deployment</h3><p class="sub" style="line-height:1.9">Role selection in this demo is not authenticated login. Browser storage is not a secure database. For deployment, implement server-side authentication, class-scoped authorization, audit logging, validated APIs, backups, and institutional privacy controls.</p></div>
+</section>
+
+<div class="footer">SuccessAI · Student Success Decision Support Prototype · Demo data only</div>
+</div>
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>{let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+$("aDate").value=today();$("iDate").value=today();
+
+const seedStudents=[
+["STU001","Aarav Sharma","Computer Science","A",88,94,90,82,86,84],
+["STU002","Priya Reddy","Information Technology","A",76,82,78,88,91,90],
+["STU003","Rahul Kumar","Electronics","B",42,58,35,40,38,45],
+["STU004","Sneha Patel","Computer Science","A",91,96,94,91,93,95],
+["STU005","Vikram Rao","Mechanical","B",61,68,52,48,45,56],
+["STU006","Ananya Das","Information Technology","B",84,88,86,92,79,82],
+["STU007","Kiran Singh","Electronics","A",55,49,44,53,61,58],
+["STU008","Meera Iyer","Computer Science","B",79,91,83,78,87,80],
+["STU009","Arjun Verma","Mechanical","A",72,76,70,68,55,62],
+["STU010","Divya Nair","Information Technology","A",38,45,32,36,42,39],
+["STU011","Rohan Gupta","Electronics","B",67,79,64,73,68,70],
+["STU012","Ishita Bose","Computer Science","A",86,89,92,85,96,94]
+].map(a=>({id:a[0],name:a[1],dept:a[2],section:a[3],academic:a[4],attendance:a[5],lms:a[6],engagement:a[7],placement:a[8],skills:a[9],feedback:75,aptitude:65,coding:65,interview:65}));
+
+let students,attendance,marks,interventions,audit,readAlerts,settings;
+const initialSettings={attendanceThreshold:75,academicThreshold:50};
+function load(){
+ try{
+ const d=JSON.parse(localStorage.getItem("successai_v2"));
+ if(d){students=d.students;attendance=d.attendance;marks=d.marks;interventions=d.interventions;audit=d.audit;readAlerts=d.readAlerts||[];settings={...initialSettings,...d.settings};return}
+ }catch(e){}
+ students=structuredClone(seedStudents);attendance={};marks={};interventions=[];audit=[];readAlerts=[];settings={...initialSettings};
+}
+function persist(){
+ try{localStorage.setItem("successai_v2",JSON.stringify({students,attendance,marks,interventions,audit,readAlerts,settings}));return true}
+ catch(e){toast("Browser storage is full or unavailable. Export a backup.");return false}
+}
+function toast(s){let t=$("toast");t.textContent=s;t.style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display="none",2800)}
+function log(action,details){
+ audit.unshift({time:new Date().toLocaleString(),role:currentRole,action,details});
+ audit=audit.slice(0,500);persist();renderAudit();
+}
+let currentRole="faculty",charts={},editingStudent=null,editingPlacement=null;
+function canAttendance(){return currentRole==="faculty"||currentRole==="admin"}
+function canMarks(){return currentRole==="faculty"||currentRole==="admin"}
+function canPlacement(){return currentRole==="placement"||currentRole==="admin"}
+function num(v){return Math.max(0,Math.min(100,Number(v)||0))}
+function average(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
+function download(name,rows){
+ const csv=rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function sessionKey(){return [$("aDate").value,$("aDept").value,$("aSection").value,$("aSubject").value,$("aSession").value].join("|")}
+function getSession(){return attendance[sessionKey()]||{}}
+function sessionEntries(){return Object.entries(attendance).flatMap(([key,rec])=>Object.entries(rec).map(([id,status])=>({key,id,status})))}
+function attPct(s){
+ const entries=sessionEntries().filter(e=>e.id===s.id);
+ if(!entries.length)return Number(s.attendance)||0;
+ const valid=entries.filter(e=>e.status!=="On Leave");
+ if(!valid.length)return Number(s.attendance)||0;
+ const attended=valid.filter(e=>e.status==="Present"||e.status==="Late").length;
+ return Math.round(attended/valid.length*100);
+}
+function academicPct(s){
+ const vals=Object.entries(marks).filter(([k])=>k.startsWith(s.id+"|")).map(([,v])=>v.max>0?v.got/v.max*100:null).filter(v=>v!==null);
+ return vals.length?Math.round(average(vals)):s.academic;
+}
+function successScore(s){
+ return Math.round(academicPct(s)*.30+attPct(s)*.20+s.lms*.15+s.placement*.15+s.engagement*.10+s.skills*.05+s.feedback*.05);
+}
+function riskLevel(s){
+ const a=attPct(s),g=academicPct(s);
+ if(g<settings.academicThreshold||(a<60&&(s.lms<40||s.engagement<40))||(g<60&&a<70))return "High";
+ if(g<65||a<settings.attendanceThreshold||s.placement<60||s.lms<55)return "Medium";
+ return "Low";
+}
+function badge(r){return `<span class="pill ${r==="High"?"high":r==="Medium"?"medium":"low"}">${r} Risk</span>`}
+function allDepartments(){return ["Computer Science","Information Technology","Electronics","Mechanical"]}
+function filteredAttendanceStudents(){
+ const dept=$("aDept").value,sec=$("aSection").value,q=$("aSearch").value.toLowerCase().trim();
+ return students.filter(s=>(dept==="All"||s.dept===dept)&&(sec==="All"||s.section===sec)&&(`${s.id} ${s.name}`.toLowerCase().includes(q)));
+}
+function refresh(){
+ renderDashboard();renderAttendance();renderStudents();renderMarks();renderRisks();renderInterventions();renderPlacements();renderNotifications();renderAudit();fillInterventionStudents();
+}
+const pageTitles={dashboard:"Student Success Overview",attendance:"Live Attendance",students:"Students & Profiles",marks:"Internal Marks",risks:"AI Risk Insights",interventions:"Intervention Tracker",placements:"Placement Readiness",notifications:"Notifications & Alerts",reports:"Reports & Audit Log",settings:"Settings & Data"};
+function go(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
+ document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.page===page));
+ $("topTitle").textContent=pageTitles[page]||page;
+ if(page==="attendance")renderAttendance();
+}
+document.querySelectorAll(".nav[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+
+function setRole(){
+ currentRole=$("role").value;
+ $("avatar").textContent=currentRole==="faculty"?"FC":currentRole==="admin"?"AD":"PO";
+ $("welcomeNotice").textContent=currentRole==="faculty"?"Faculty view: update attendance and internal marks. Other indicators are displayed for review.":currentRole==="admin"?"Administrator view: review institutional indicators and manage the prototype data.":"Placement officer view: manage placement readiness. Attendance and internal marks are read-only.";
+ $("attendanceNotice").textContent=canAttendance()?"You can mark and save attendance in this prototype. Real deployments must restrict faculty to assigned classes on the server.":"Read-only role: you can view attendance but cannot edit it.";
+ $("aDept").disabled=currentRole==="faculty";
+ $("aSection").disabled=currentRole==="faculty";
+ $("aSubject").disabled=currentRole==="placement";
+ $("aDate").disabled=currentRole==="placement";
+ $("aSession").disabled=currentRole==="placement";
+ renderAttendance();renderMarks();renderPlacements();renderInterventions();
+}
+$("role").addEventListener("change",()=>{setRole();toast("View changed to "+currentRole);});
+function renderDashboard(){
+ $("kStudents").textContent=students.length;
+ $("kScore").textContent=Math.round(average(students.map(successScore)));
+ $("kRisk").textContent=students.filter(s=>riskLevel(s)==="High").length;
+ $("kAttendance").textContent=Math.round(average(students.map(attPct)))+"%";
+ const bands=[students.filter(s=>successScore(s)<40).length,students.filter(s=>successScore(s)>=40&&successScore(s)<60).length,students.filter(s=>successScore(s)>=60&&successScore(s)<75).length,students.filter(s=>successScore(s)>=75&&successScore(s)<90).length,students.filter(s=>successScore(s)>=90).length];
+ makeChart("scoreChart",{type:"bar",data:{labels:["<40","40–59","60–74","75–89","90+"],datasets:[{data:bands,backgroundColor:["#dc4545","#f59e0b","#818cf8","#2dd4bf","#16845e"],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+ makeChart("attChart",{type:"bar",data:{labels:students.map(s=>s.name.split(" ")[0]),datasets:[{data:students.map(attPct),backgroundColor:students.map(s=>attPct(s)<settings.attendanceThreshold?"#e76b6b":"#0d9488"),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100},x:{ticks:{font:{size:9}}}}}});
+ const flagged=students.filter(s=>riskLevel(s)!=="Low").sort((a,b)=>successScore(a)-successScore(b)).slice(0,5);
+ $("priorityInsights").innerHTML=flagged.length?flagged.map(s=>`<div class="profilebox"><b>${esc(s.name)}</b> · ${badge(riskLevel(s))}<div class="sub">Score ${successScore(s)}/100. ${esc(factors(s).join("; "))}.</div><button class="btn" style="margin-top:8px" onclick="createSuggestedIntervention('${s.id}')">Create action plan</button></div>`).join(""):'<div class="notice good">No students currently trigger the configured risk rules.</div>';
+ const recent=sessionEntries().slice(-5).reverse();
+ $("recentAttendance").innerHTML=recent.length?recent.map(e=>{const s=students.find(s=>s.id===e.id);return s?`<tr><td>${esc(s.name)}</td><td>${esc(e.key.split("|")[0])}</td><td>${esc(e.key.split("|")[3])}</td><td>${esc(e.status)}</td></tr>`:""}).join(""):'<tr><td colspan="4" class="empty">No saved attendance yet.</td></tr>';
+}
+function makeChart(id,config){if(!window.Chart)return;if(charts[id])charts[id].destroy();charts[id]=new Chart($(id),config)}
+function factors(s){
+ let f=[];
+ if(attPct(s)<settings.attendanceThreshold)f.push("Attendance below threshold");
+ if(academicPct(s)<settings.academicThreshold)f.push("Academic performance needs review");
+ if(s.lms<55)f.push("Low LMS activity");
+ if(s.engagement<50)f.push("Low engagement");
+ if(s.placement<60)f.push("Placement preparation needed");
+ return f.length?f:["No major rule-based flags"];
+}
+function suggestion(s){
+ if(attPct(s)<settings.attendanceThreshold)return "Review attendance and contact the student";
+ if(academicPct(s)<settings.academicThreshold)return "Offer subject-specific remedial support";
+ if(s.placement<60)return "Schedule aptitude and mock interview practice";
+ if(s.lms<55)return "Review assignment completion and LMS engagement";
+ return "Continue monitoring progress";
+}
+
+function renderAttendance(){
+ const list=filteredAttendanceStudents(),session=getSession();
+ $("attendanceRows").innerHTML=list.length?list.map(s=>{
+ const status=session[s.id]||"";
+ return `<tr><td><b>${esc(s.name)}</b><span class="small">${esc(s.id)}</span></td><td>${esc(s.dept)} · ${s.section}</td><td>${attPct(s)}%<div class="bar"><span style="width:${attPct(s)}%"></span></div></td><td><select class="status" data-att="${esc(s.id)}" ${!canAttendance()?"disabled":""}><option value="">Not marked</option>${["Present","Absent","Late","On Leave"].map(v=>`<option ${v===status?"selected":""}>${v}</option>`).join("")}</select></td></tr>`;
+ }).join(""):'<tr><td colspan="4" class="empty">No matching students.</td></tr>';
+ const vals=list.map(s=>session[s.id]).filter(Boolean);
+ $("aTotal").textContent=list.length;
+ $("aPresent").textContent=vals.filter(v=>v==="Present").length;
+ $("aAbsent").textContent=vals.filter(v=>v==="Absent").length;
+ $("aOther").textContent=vals.filter(v=>v==="Late"||v==="On Leave").length;
+ $("aPending").textContent=`${vals.length} of ${list.length} students marked. ${list.length-vals.length} not marked. Unsaved changes are kept in the current page until saved.`;
+}
+$("attendanceRows").addEventListener("change",e=>{
+ const el=e.target.closest("[data-att]");if(!el||!canAttendance())return;
+ const key=sessionKey();if(!attendance[key])attendance[key]={};
+ if(el.value)attendance[key][el.dataset.att]=el.value;else delete attendance[key][el.dataset.att];
+ renderAttendance();
+});
+["aDept","aSection","aSubject","aDate","aSession"].forEach(id=>$(id).addEventListener("change",renderAttendance));
+$("aSearch").addEventListener("input",renderAttendance);
+function markAll(status){
+ if(!canAttendance())return toast("This role cannot edit attendance.");
+ if(!confirm(`Mark all ${filteredAttendanceStudents().length} visible students as ${status}?`))return;
+ const key=sessionKey();if(!attendance[key])attendance[key]={};
+ filteredAttendanceStudents().forEach(s=>attendance[key][s.id]=status);renderAttendance();toast("Marks updated. Click Save Attendance.");
+}
+function clearMarks(){
+ if(!canAttendance())return;
+ if(!confirm("Clear all marks in this selected session?"))return;
+ delete attendance[sessionKey()];renderAttendance();toast("Session marks cleared. Save Attendance to commit.");
+}
+function saveAttendance(){
+ if(!canAttendance())return toast("Access denied.");
+ const list=filteredAttendanceStudents(),session=getSession();
+ const missing=list.filter(s=>!session[s.id]);
+ if(missing.length&&!confirm(`${missing.length} students are unmarked. Save anyway?`))return;
+ if(!list.length)return toast("No students selected.");
+ persist();log("Attendance saved",`${sessionKey()}; ${list.length-missing.length} marked`);
+ refresh();toast("Attendance saved in this browser.");
+}
+
+function renderStudents(){
+ const q=$("studentSearch").value.toLowerCase(),dept=$("studentDept").value;
+ const list=students.filter(s=>(`${s.name} ${s.id} ${s.dept}`.toLowerCase().includes(q))&&(dept==="All"||s.dept===dept));
+ $("studentRows").innerHTML=list.map(s=>`<tr><td><b>${esc(s.name)}</b><span class="small">${esc(s.id)}</span></td><td>${esc(s.dept)}</td><td>${attPct(s)}%</td><td>${academicPct(s)}%</td><td><span class="score">${successScore(s)}</span>/100</td><td>${badge(riskLevel(s))}</td><td><button class="btn" onclick="viewStudent('${s.id}')">View</button> ${currentRole==="admin"?`<button class="btn" onclick="editStudent('${s.id}')">Edit</button>`:""}</td></tr>`).join("")||'<tr><td colspan="7" class="empty">No students found.</td></tr>';
+}
+$("studentSearch").addEventListener("input",renderStudents);$("studentDept").addEventListener("change",renderStudents);
+function openStudentForm(){
+ if(currentRole!=="admin")return toast("Only administrators can add students.");
+ editingStudent=null;$("studentFormCard").style.display="block";$("studentFormTitle").textContent="Add Student";
+ ["fId","fName"].forEach(id=>$(id).value="");
+ ["fAcademic","fLms","fEngagement","fPlacement","fSkills"].forEach(id=>$(id).value=60);
+}
+function editStudent(id){
+ if(currentRole!=="admin")return toast("Only administrators can edit student records.");
+ const s=students.find(s=>s.id===id);if(!s)return;
+ editingStudent=id;openStudentForm();editingStudent=id;$("studentFormTitle").textContent="Edit Student";
+ $("fId").value=s.id;$("fId").disabled=true;$("fName").value=s.name;$("fDept").value=s.dept;$("fSection").value=s.section;
+ $("fAcademic").value=s.academic;$("fLms").value=s.lms;$("fEngagement").value=s.engagement;$("fPlacement").value=s.placement;$("fSkills").value=s.skills;
+ $("studentFormCard").style.display="block";
+}
+function saveStudent(){
+ if(currentRole!=="admin")return toast("Only administrators can add or edit students.");
+ const id=$("fId").value.trim(),name=$("fName").value.trim();
+ if(!id||!name)return toast("Enter student ID and name.");
+ if(!editingStudent&&students.some(s=>s.id===id))return toast("That student ID already exists.");
+ const data={id,name,dept:$("fDept").value,section:$("fSection").value,academic:num($("fAcademic").value),lms:num($("fLms").value),engagement:num($("fEngagement").value),placement:num($("fPlacement").value),skills:num($("fSkills").value),feedback:75,aptitude:65,coding:65,interview:65,attendance:75};
+ if(editingStudent){const s=students.find(s=>s.id===editingStudent);Object.assign(s,data);data.id=editingStudent;}
+ else students.push(data);
+ persist();log(editingStudent?"Student updated":"Student added",name+" ("+id+")");$("fId").disabled=false;$("studentFormCard").style.display="none";refresh();toast("Student saved.");
+}
+function viewStudent(id){
+ const s=students.find(s=>s.id===id);if(!s)return;
+ const logs=sessionEntries().filter(e=>e.id===id);
+ const interventionsFor=interventions.filter(i=>i.studentId===id);
+ $("profileCard").style.display="block";
+ $("profileCard").innerHTML=`<div class="heading"><div><h2>${esc(s.name)}</h2><div class="sub">${esc(s.id)} · ${esc(s.dept)} · Section ${s.section}</div></div><button class="btn" onclick="$('profileCard').style.display='none'">Close</button></div><div class="grid four"><div class="profilebox">Success score<div class="metric">${successScore(s)}/100</div></div><div class="profilebox">Attendance<div class="metric">${attPct(s)}%</div></div><div class="profilebox">Academic<div class="metric">${academicPct(s)}%</div></div><div class="profilebox">Risk<div style="margin-top:12px">${badge(riskLevel(s))}</div></div></div><h3>Student Insights</h3><p class="sub">${esc(factors(s).join(". "))}.</p><h3 style="margin-top:18px">Suggested Next Step</h3><p>${esc(suggestion(s))}</p><h3 style="margin-top:18px">Recorded Attendance</h3><p class="sub">${logs.length?logs.map(e=>esc(e.key.split("|")[0]+" · "+e.key.split("|")[3]+" · "+e.status)).join("<br>"):"No attendance entries recorded."}</p><h3 style="margin-top:18px">Intervention History</h3><p class="sub">${interventionsFor.length?interventionsFor.map(i=>esc(i.type+" — "+i.status+": "+i.notes)).join("<br>"):"No intervention plans."}</p>`;
+ $("profileCard").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function markKey(id,subject){return id+"|"+subject}
+function getMark(s,subject){return marks[markKey(s.id,subject)]||{got:0,max:100}}
+function renderMarks(){
+ const subject=$("mSubject").value,q=$("mSearch").value.toLowerCase();
+ $("marksRows").innerHTML=students.filter(s=>(s.name+" "+s.id).toLowerCase().includes(q)).map(s=>{
+ const m=getMark(s,subject);
+ return `<tr><td><b>${esc(s.name)}</b><span class="small">${esc(s.id)}</span></td><td>${esc(subject)}</td><td><input type="number" min="0" max="1000" class="field" style="width:100px" id="got_${s.id}" value="${m.got}" ${!canMarks()?"disabled":""}></td><td><input type="number" min="1" max="1000" class="field" style="width:100px" id="max_${s.id}" value="${m.max}" ${!canMarks()?"disabled":""}></td><td>${m.max?Math.round(m.got/m.max*100)+"%":"—"}</td><td><button class="btn" ${!canMarks()?"disabled":""} onclick="saveMark('${s.id}')">Save</button></td></tr>`;
+ }).join("");
+}
+$("mSubject").addEventListener("change",renderMarks);$("mSearch").addEventListener("input",renderMarks);
+function saveMark(id){
+ if(!canMarks())return toast("This role cannot edit marks.");
+ const got=Number($("got_"+id).value),max=Number($("max_"+id).value);
+ if(!Number.isFinite(got)||!Number.isFinite(max)||max<=0||got<0||got>max)return toast("Enter valid marks; obtained marks cannot exceed the maximum.");
+ const subject=$("mSubject").value,s=students.find(s=>s.id===id);
+ marks[markKey(id,subject)]={got,max};
+ s.academic=academicPct(s);
+ persist();log("Internal marks saved",`${s.name}; ${subject}; ${got}/${max}`);
+ refresh();toast("Marks saved.");
+}
+function renderRisks(){
+ const counts={High:0,Medium:0,Low:0};students.forEach(s=>counts[riskLevel(s)]++);
+ $("rHigh").textContent=counts.High;$("rMedium").textContent=counts.Medium;$("rLow").textContent=counts.Low;
+ $("riskRows").innerHTML=[...students].sort((a,b)=>({High:0,Medium:1,Low:2}[riskLevel(a)]-{High:0,Medium:1,Low:2}[riskLevel(b)])).map(s=>`<tr><td><b>${esc(s.name)}</b><span class="small">${esc(s.id)}</span></td><td>${successScore(s)}/100</td><td>${attPct(s)}%</td><td>${academicPct(s)}%</td><td>${badge(riskLevel(s))}</td><td>${esc(factors(s).join("; "))}</td><td>${esc(suggestion(s))}<br><button class="btn" style="margin-top:6px" onclick="createSuggestedIntervention('${s.id}')">Create plan</button></td></tr>`).join("");
+}
+
+function fillInterventionStudents(){
+ $("iStudent").innerHTML=students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.id)})</option>`).join("");
+}
+function openInterventionForm(){
+ if(currentRole==="placement")return toast("Placement officers cannot create general faculty interventions.");
+ $("interventionForm").style.display="block";fillInterventionStudents();
+}
+function createSuggestedIntervention(id){
+ if(currentRole==="placement")return toast("This role cannot create general faculty interventions.");
+ go("interventions");openInterventionForm();$("iStudent").value=id;
+ const s=students.find(s=>s.id===id);$("iNotes").value=suggestion(s)+". Review progress at the follow-up date.";
+}
+function saveIntervention(){
+ if(currentRole==="placement")return toast("Access denied.");
+ const studentId=$("iStudent").value,notes=$("iNotes").value.trim(),date=$("iDate").value;
+ if(!notes||!date)return toast("Enter an action plan and follow-up date.");
+ const s=students.find(s=>s.id===studentId);
+ interventions.unshift({id:"INT"+Date.now(),studentId,type:$("iType").value,notes,date,status:"Pending",created:new Date().toISOString()});
+ persist();log("Intervention created",s.name+" — "+$("iType").value);$("iNotes").value="";$("interventionForm").style.display="none";refresh();toast("Intervention created.");
+}
+$("iFilter").addEventListener("change",renderInterventions);
+function renderInterventions(){
+ const f=$("iFilter").value;
+ $("interventionRows").innerHTML=interventions.filter(i=>f==="All"||i.status===f).map(i=>{
+ const s=students.find(s=>s.id===i.studentId);
+ return `<tr><td>${esc(s?s.name:i.studentId)}<span class="small">${esc(i.studentId)}</span></td><td>${esc(i.type)}</td><td>${esc(i.notes)}</td><td>${esc(i.date)}</td><td><span class="pill ${i.status==="Completed"?"low":i.status==="In Progress"?"info":"medium"}">${esc(i.status)}</span></td><td><select class="field" style="min-width:120px" ${currentRole==="placement"?"disabled":""} onchange="updateIntervention('${i.id}',this.value)">${["Pending","In Progress","Completed"].map(v=>`<option ${v===i.status?"selected":""}>${v}</option>`).join("")}</select></td></tr>`;
+ }).join("")||'<tr><td colspan="6" class="empty">No intervention plans recorded.</td></tr>';
+}
+function updateIntervention(id,status){
+ if(currentRole==="placement")return toast("Access denied.");
+ const i=interventions.find(i=>i.id===id);if(!i)return;
+ i.status=status;persist();log("Intervention status updated",i.id+" → "+status);refresh();toast("Intervention status updated.");
+}
+
+function renderPlacements(){
+ $("placementRows").innerHTML=students.filter(s=>(s.name+" "+s.id).toLowerCase().includes($("pSearch").value.toLowerCase())).map(s=>`<tr><td><b>${esc(s.name)}</b><span class="small">${esc(s.id)}</span></td><td>${s.skills}%</td><td>${s.aptitude}%</td><td>${s.coding}%</td><td>${s.interview}%</td><td><b>${Math.round((s.skills+s.aptitude+s.coding+s.interview)/4)}%</b></td><td><button class="btn" ${!canPlacement()?"disabled":""} onclick="editPlacement('${s.id}')">Update</button></td></tr>`).join("");
+}
+$("pSearch").addEventListener("input",renderPlacements);
+function editPlacement(id){
+ if(!canPlacement())return toast("Only placement officers or administrators can edit placement indicators.");
+ const s=students.find(s=>s.id===id);if(!s)return;
+ editingPlacement=id;$("pStudentName").value=s.name;$("pAptitude").value=s.aptitude;$("pCoding").value=s.coding;$("pInterview").value=s.interview;$("pSkill").value=s.skills;$("placementForm").style.display="block";
+}
+function savePlacement(){
+ if(!canPlacement())return toast("Access denied.");
+ const s=students.find(s=>s.id===editingPlacement);if(!s)return;
+ s.aptitude=num($("pAptitude").value);s.coding=num($("pCoding").value);s.interview=num($("pInterview").value);s.skills=num($("pSkill").value);
+ s.placement=Math.round((s.aptitude+s.coding+s.interview+s.skills)/4);
+ persist();log("Placement readiness updated",s.name);$("placementForm").style.display="none";refresh();toast("Placement indicators updated.");
+}
+
+function buildAlerts(){
+ let a=[];
+ students.forEach(s=>{
+ if(attPct(s)<settings.attendanceThreshold)a.push({id:"att-"+s.id,text:`${s.name}: attendance is ${attPct(s)}%, below the ${settings.attendanceThreshold}% threshold.`,type:"Attendance"});
+ if(academicPct(s)<settings.academicThreshold)a.push({id:"acad-"+s.id,text:`${s.name}: academic average is ${academicPct(s)}%; review academic support.`,type:"Academic"});
+ if(riskLevel(s)==="High")a.push({id:"risk-"+s.id,text:`${s.name}: high rule-based risk flag. ${suggestion(s)}.`,type:"Student risk"});
+ });
+ interventions.filter(i=>i.status!=="Completed"&&i.date<=today()).forEach(i=>{
+ const s=students.find(s=>s.id===i.studentId);a.push({id:"int-"+i.id,text:`Follow-up due for ${s?s.name:i.studentId}: ${i.type}.`,type:"Follow-up"});
+ });
+ return a;
+}
+function renderNotifications(){
+ const a=buildAlerts();
+ $("notificationList").innerHTML=a.length?a.map(n=>{
+ const read=readAlerts.includes(n.id);
+ return `<div class="card" style="${read?"opacity:.65":""}"><div class="heading" style="margin:0"><div><span class="pill ${n.type==="Student risk"?"high":n.type==="Follow-up"?"medium":"info"}">${esc(n.type)}</span><p style="margin:9px 0">${esc(n.text)}</p></div><button class="btn" onclick="markRead('${n.id}')">${read?"Read":"Mark Read"}</button></div></div>`;
+ }).join(""):'<div class="notice good">No alerts from the current rules.</div>';
+}
+function markRead(id){if(!readAlerts.includes(id))readAlerts.push(id);persist();renderNotifications()}
+function markAllRead(){readAlerts=[...new Set([...readAlerts,...buildAlerts().map(a=>a.id)])];persist();renderNotifications();toast("Notifications marked as read.");}
+
+function renderAudit(){
+ $("auditRows").innerHTML=audit.slice(0,200).map(a=>`<tr><td>${esc(a.time)}</td><td>${esc(a.role)}</td><td>${esc(a.action)}</td><td>${esc(a.details)}</td></tr>`).join("")||'<tr><td colspan="4" class="empty">No audit events recorded yet.</td></tr>';
+}
+function exportStudents(){
+ if(currentRole!=="admin")return toast("Only administrators can export the full student report.");
+ download("student-success-report.csv",[["ID","Name","Department","Section","Attendance %","Academic %","LMS","Engagement","Placement","Skills","Success Score","Risk"],...students.map(s=>[s.id,s.name,s.dept,s.section,attPct(s),academicPct(s),s.lms,s.engagement,s.placement,s.skills,successScore(s),riskLevel(s)])]);
+ log("Report exported","Student success report");
+}
+function exportAttendance(){
+ if(currentRole!=="admin")return toast("Only administrators can export the full attendance report.");
+ download("attendance-report.csv",[["Date","Department filter","Section filter","Subject","Session","Student ID","Student Name","Status"],...sessionEntries().map(e=>{const s=students.find(s=>s.id===e.id);return [...e.key.split("|"),e.id,s?s.name:"Unknown",e.status]})]);
+ log("Report exported","Attendance report");
+}
+function exportInterventions(){
+ if(currentRole!=="admin")return toast("Only administrators can export the full intervention report.");
+ download("intervention-report.csv",[["Student ID","Student","Type","Notes","Follow-up","Status"],...interventions.map(i=>{const s=students.find(s=>s.id===i.studentId);return [i.studentId,s?s.name:"Unknown",i.type,i.notes,i.date,i.status]})]);
+ log("Report exported","Intervention report");
+}
+function exportRisk(){
+ if(currentRole!=="admin")return toast("Only administrators can export the full risk report.");
+ download("risk-report.csv",[["ID","Name","Attendance","Academic","Success score","Risk","Factors","Suggested action"],...students.map(s=>[s.id,s.name,attPct(s),academicPct(s),successScore(s),riskLevel(s),factors(s).join("; "),suggestion(s)])]);
+ log("Report exported","Risk report");
+}
+function backupData(){
+ if(currentRole!=="admin")return toast("Only administrators can download a full backup.");
+ const data={students,attendance,marks,interventions,audit,readAlerts,settings};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="successai-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ log("Backup downloaded","JSON backup");
+}
+function saveSettings(){
+ if(currentRole!=="admin")return toast("Only administrators can change system settings.");
+ settings.attendanceThreshold=Math.max(1,Math.min(100,Number($("threshold").value)||75));
+ settings.academicThreshold=Math.max(1,Math.min(100,Number($("academicThreshold").value)||50));
+ persist();log("Settings changed",JSON.stringify(settings));refresh();toast("Thresholds saved.");
+}
+function parseCSVLine(line){
+ const out=[];let val="",quoted=false;
+ for(let i=0;i<line.length;i++){
+ const c=line[i];
+ if(c==='"'&&quoted&&line[i+1]==='"'){val+='"';i++}
+ else if(c==='"')quoted=!quoted;
+ else if(c===","&&!quoted){out.push(val.trim());val=""}
+ else val+=c;
+ }
+ out.push(val.trim());return out;
+}
+async function importCSV(){
+ if(currentRole!=="admin")return toast("Only administrators can import student data.");
+ const file=$("csvFile").files[0];if(!file)return toast("Choose a CSV file first.");
+ const text=await file.text(),lines=text.replace(/^\uFEFF/,"").split(/\r?\n/).filter(x=>x.trim());
+ if(lines.length<2)return toast("CSV has no student records.");
+ const headers=parseCSVLine(lines[0]).map(x=>x.toLowerCase());
+ const idx=name=>headers.indexOf(name);
+ if(idx("id")<0||idx("name")<0)return toast("CSV must include id and name columns.");
+ let added=0,updated=0;
+ for(const line of lines.slice(1)){
+ const r=parseCSVLine(line),id=r[idx("id")],name=r[idx("name")];if(!id||!name)continue;
+ let s=students.find(s=>s.id===id);
+ const data={id,name,dept:r[idx("dept")]||"Computer Science",section:r[idx("section")]||"A",academic:num(r[idx("academic")]||60),lms:num(r[idx("lms")]||60),engagement:num(r[idx("engagement")]||60),placement:num(r[idx("placement")]||60),skills:num(r[idx("skills")]||60),feedback:75,attendance:75,aptitude:65,coding:65,interview:65};
+ if(s){Object.assign(s,data);updated++}else{students.push(data);added++}
+ }
+ persist();log("CSV imported",`${added} added, ${updated} updated`);refresh();toast(`Import complete: ${added} added, ${updated} updated.`);
+}
+function resetData(){
+ if(currentRole!=="admin")return toast("Only administrators can reset the prototype.");
+ if(!confirm("Reset all saved changes and restore sample data? This cannot be undone."))return;
+ localStorage.removeItem("successai_v2");load();$("threshold").value=settings.attendanceThreshold;$("academicThreshold").value=settings.academicThreshold;refresh();toast("Sample data restored.");
+}
+
+// Refresh all views after navigating or editing data.
+load();
+$("threshold").value=settings.attendanceThreshold;
+$("academicThreshold").value=settings.academicThreshold;
+$("studentFormCard").style.display="none";
+$("role").value="faculty";setRole();refresh();
+</script>
+</body>
+</html>
